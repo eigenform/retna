@@ -25,7 +25,10 @@ INCLUDES	:=
 # options for code generation
 #---------------------------------------------------------------------------------
 
-CFLAGS = 	-g -O2 -Wall $(MACHDEP) $(INCLUDE)
+GIT_VERSION 	:= "$(shell git describe --dirty --always --tags --long)"
+
+CFLAGS = 	-g -O2 -Wall $(MACHDEP) $(INCLUDE) \
+			-DRETNA_GIT_VERSION=\"$(GIT_VERSION)\"
 CXXFLAGS =	$(CFLAGS)
 
 # The ARM stub *must* be loaded into physical memory at 0x00010000. 
