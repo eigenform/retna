@@ -1,0 +1,7 @@
+*.dol
+*.elf
+*.bin
+*.map
+*.o
+loader/build/
+loader/data/*
