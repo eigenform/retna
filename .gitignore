@@ -3,5 +3,6 @@
 *.bin
 *.map
 *.o
+*.xml
 loader/build/
 loader/data/*
