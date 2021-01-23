@@ -37,7 +37,9 @@ Loader for [`iris`](https://github.com/eigenform/iris).
   to the newly-loaded reset exception vector at `0xffff0000`
 
 ## Memory Map
-The physical memory layout 
+The physical memory layout during the boot process looks like this.
+After the target kernel stub is finished, the IOS58 kernel is replaced with
+the target kernel.
 
 ```
 0x0000_0000 - start of MEM1
