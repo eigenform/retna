@@ -15,12 +15,12 @@ Loader for [`iris`](https://github.com/eigenform/iris).
     ```c
     struct {
       u32 header_len;
-      u32 elf_offset;
+      u32 stub_len;
       u32 elf_len;
       u32 pad;
 
-      u8  stub_loader_data[elf_offset - header_len];
-      u8  elf_data[elf_size];
+      u8  stub_loader_data[stub_len];
+      u8  elf_data[elf_len];
     };
     ```
 

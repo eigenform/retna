@@ -1,0 +1,73 @@
+#!/usr/bin/python3
+
+from sys import stdout
+from datetime import datetime
+from threading import Thread
+from _thread import interrupt_main
+
+from pyftdi.term import Terminal
+from serial.serialutil import SerialException
+from serial import serial_for_url, PARITY_NONE
+
+class GeckoConsole:
+    def __init__(self, dev="/dev/ttyUSB0", baud=115200, log="/tmp/gcon.log"):
+        self.port = self.open_dev(dev, baud)
+        self.terminal = Terminal()
+        self.log = open(log, "a")
+        self.running = True
+        now = datetime.now().strftime("%b %d %H:%M:%S")
+        hdr = "[*] {}\topen on {} @ {}bps".format(now, dev, baud)
+        print(hdr)
+        self.log.write("\n"+hdr+"\n")
+
+    def open_dev(self, dev, baud):
+        try:
+            port = serial_for_url(dev, baudrate=baud, timeout=0)
+            if not port.is_open:
+                port.open()
+            return port
+        except SerialException as e:
+            print(e)
+            exit()
+
+    def run(self):
+        self.terminal.init(False)
+        stdout.flush()
+        rx_thread = Thread(target=self.rx_loop, daemon=True)
+        rx_thread.start()
+        self.tx_loop()
+
+    def rx_loop(self):
+        try:
+            while self.running:
+                buf = self.port.read(4096)
+                if not buf: 
+                    continue
+                data = buf.decode('utf8', errors='replace')
+                stdout.write(data)
+                self.log.write(data)
+        except KeyboardInterrupt:
+            return
+        except Exception as e:
+            self.running = False
+            return None
+
+    def tx_loop(self):
+        while self.running:
+            try:
+                c = self.terminal.getkey()
+                if ord(c) == 0x3: 
+                    raise KeyboardInterrupt("Caught Ctrl-C")
+                stdout.write(c.decode('utf8', errors='replace'))
+                stdout.flush()
+                #self.port.write(c)
+            except KeyError: 
+                continue
+            except KeyboardInterrupt: 
+                if self.port:
+                    self.port.read(self.port.in_waiting)
+                    self.port.close()
+                    self.terminal.reset()
+
+con = GeckoConsole()
+con.run()

@@ -18,6 +18,8 @@ static ioctlv ALIGN(32)	payload[2] = {
 int main(int argc, char **argv) 
 {
 	video_init();
+	CON_EnableGecko(1, true);
+
 	printf("retna %s\n", RETNA_GIT_VERSION);
 	printf("[*] Press START to continue\n");
 	while(1) 
