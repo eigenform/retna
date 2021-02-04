@@ -1,5 +1,6 @@
 # retna
-Loader for [`iris`](https://github.com/eigenform/iris).
+Foreign kernel loader for IOSv58, originally written for booting
+[`mana`](https://github.com/eigenform/mana).
 
 ## Boot Process
 

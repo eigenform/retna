@@ -11,19 +11,19 @@ _start:
 
 .arm
 __arm_start:
-	// Restore the two words we clobbered on the stack, just in case?
+	// Restore the two words we clobbered on the stack
 	ldr	r1, =0x000001c0
 	str	r1, [sp]
 	ldr	r1, =0x20100869
 	str	r1, [sp, #-4]
 
-	// Jump into the new kernel at 0x10100000. 
-	// Execution shouldn't resume after this point.
-	ldr	r0, =0x10100000
-	ldr	r1, =0x00bad105
-	bl	__syscall_boot_new_ios_kernel
-__stub_panic:
-	b	__stub_panic
+	bl	main
+
+	// Restore the original LR we clobbered, return with -1337
+	ldr	r0, =0xfffffac7	
+	ldr	r3, =0x20100869
+	mov	lr, r3
+	bx	lr
 .ltorg
 
 .global boot_new_ios_kernel
